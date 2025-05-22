@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinemas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: rgb(19, 1, 1);
+            color: white;
+        }
+
+        header {
+            padding: 0;
+            background-color: maroon;
+            color: white;
+        }
+
+        .header-top {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .nav-main {
+            background-color: #800000;
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        .nav-main a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-main a:hover {
+            background-color: red;
+        }
+
+        .logout-btn {
+            background-color: red;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: darkred;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        .cinema-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cinema-card {
+            background-color: #2b0000;
+            border-radius: 10px;
+            padding: 1rem;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .cinema-card:hover {
+            border-color: red;
+        }
+
+        .cinema-card h3 {
+            margin: 0;
+            color: #ff4d4d;
+        }
+
+        .cinema-card p {
+            margin: 0.5rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: maroon;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <h1>CINEMA</h1>
+            <div>
+                <button class="logout-btn" onclick="window.location.href='login.html'">Login/Sign Up</button>
+            </div>
+        </div>
+        <nav class="nav-main">
+            <a href="index.html">Home</a>
+            <a href="cinema.html">Cinema</a>
+            <a href="index.html">Coming Soon</a>
+            <a href="about us">About Us</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Available Cinemas</h2>
+        <div class="cinema-list">
+            <div class="cinema-card">
+                <h3>Cinema 1 - SM North</h3>
+                <p>Location: Quezon City</p>
+                <p>Contact: (02) 1234-5678</p>
+                <p>Features: 3D, IMAX, Recliner Seats</p>
+            </div>
+            <div class="cinema-card">
+                <h3>Cinema 2 - Ayala Malls</h3>
+                <p>Location: Makati City</p>
+                <p>Contact: (02) 2345-6789</p>
+                <p>Features: Dolby Atmos, VIP Lounge</p>
+            </div>
+            <div class="cinema-card">
+                <h3>Cinema 3 - Robinsons Galleria</h3>
+                <p>Location: Pasig City</p>
+                <p>Contact: (02) 3456-7890</p>
+                <p>Features: 4DX, Snack Bar</p>
+            </div>
+            <div class="cinema-card">
+                <h3>Cinema 4 - SM Fairview</h3>
+                <p>Location: Quezon City</p>
+                <p>Contact: (02) 3456-7890</p>
+                <p>Features: 4DX, Snack Bar</p>
+            </div>
+            <div class="cinema-card">
+                <h3>Cinema 5 - Greenbelt Cinema</h3>
+                <p>Location: Makati City</p>
+                <p>Contact: (02) 4567-8901</p>
+                <p>Features: Luxury Seating, 3D Glasses, Free Popcorn</p>
+            </div>
+            <div class="cinema-card">
+                <h3>Cinema 6 - Vista Mall Taguig</h3>
+                <p>Location: Taguig City</p>
+                <p>Contact: (02) 5678-9012</p>
+                <p>Features: Laser Projection, Dolby Surround, Couple Seats</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Movie Selection. All Rights Reserved.</p>
+        <p>Contact us at: support@moviesite.com | (02) 9999-8888</p>
+        <p>Follow us on 
+            <a href="#">Facebook</a>, 
+            <a href="#">Twitter</a>, and 
+            <a href="#">Instagram</a>
+        </p>
+    </footer>
+</body>
+</html>

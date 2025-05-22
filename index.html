@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie Booking System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: rgb(19, 1, 1);
+      color: white;
+    }
+
+    header {
+      padding: 0;
+      background-color: maroon;
+      color: white;
+    }
+
+    .header-top {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .nav-main {
+      background-color: #800000;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+    }
+
+    .nav-main a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-main a:hover {
+      background-color: red;
+    }
+
+    .logout-btn {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-left: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn:hover {
+      background-color: darkred;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: red;
+    }
+
+    .carousel-buttons {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .carousel-buttons button {
+      background-color: red;
+      border-radius: 50%;
+      border: none;
+      width: 40px;
+      height: 40px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin: 0 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-buttons button:hover {
+      background-color: darkred;
+    }
+
+    #carouselWrapper {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      border: none;
+      max-width: 100%;
+      padding-bottom: 10px;
+      
+      scrollbar-width: none; 
+    }
+    #carouselWrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .movie-grid {
+      display: flex;
+      gap: 1rem;
+      user-select: none;
+    }
+
+    .movie-card {
+      min-width: 150px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      transition: border-color 0.3s, transform 0.3s;
+      background-color: #2b0000;
+      flex-shrink: 0;
+    }
+
+    .movie-card:hover {
+      transform: scale(1.05);
+      border-color: red;
+      background-color: #4b0000;
+    }
+
+    .movie-card.selected {
+      border-color: #ff4d4d;
+      box-shadow: 0 0 10px #ff4d4d;
+      background-color: #500000;
+    }
+
+    .poster {
+      width: 250px;
+      height: 400px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 2px solid red;
+    }
+
+    button.book-btn {
+      background-color: maroon;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.3s, transform 0.2s;
+      cursor: pointer;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    button.book-btn:hover:not(:disabled) {
+      background-color: darkred;
+      transform: scale(1.05);
+    }
+
+    button.book-btn:disabled {
+      background-color: #66000088;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+ .coming-sooo {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.coming-grid {
+  display: flex;
+  justify-content: center; 
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.coming-card {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  width: 520px;
+  box-shadow: 0 4px 10px rgba(97, 24, 24, 0.5);
+}
+
+    .coming-card .poster {
+  width: 500px;
+  height: 200px;
+  background-color: #ccc;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid red;
+  border-radius: 8px;
+  margin: 0 auto 10px auto;
+    }
+  #trailerModal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+    }
+    #trailerModal iframe {
+      border: none;
+      border-radius: 10px;
+    }
+    #closeModal {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 0.5rem 0.7rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: maroon;
+      color: white;
+      margin-top: 2rem;
+    }
+    /* Receipt Styles */
+    .container {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 8px 24px rgba(255, 0, 0, 0.4);
+      animation: fadeIn 0.5s ease forwards;
+      margin: auto;
+    }
+    .summary {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    .summary strong {
+      color: #ff4d4d;
+    }
+    .final-receipt {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #ff5959;
+      margin-top: 10px;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<body>
+  <header>
+    <div class="header-top">
+      <h1>MovieHub</h1>
+      <div>
+        <button class="logout-btn" onclick="window.location.href='login.html'">Login/Sign Up</button>
+      </div>
+    </div>
+    <nav class="nav-main">
+      <a href="index.html">Home</a>
+      <a href="cinema.html">Cinema</a>
+      <a href="Comingsoon.html">Coming Soon</a>
+      <a href="aboutus">About Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="now-showing" id="nowshowing">
+      <h2>NOW SHOWING</h2>
+
+      <div class="carousel-buttons">
+        <button aria-label="Previous" id="prevBtn">&#8592;</button>
+        <button aria-label="Next" id="nextBtn">&#8594;</button>
+      </div>
+
+      <div id="carouselWrapper">
+        <div class="movie-grid" id="movieCarousel">
+       
+          <div class="movie-card" data-movie="Final Destination" data-poster="Final Destination">
+            <div class="poster" style="background-image: url('final.jpg');"></div>
+            <h3>Final Destination </h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Lilo & Stitch" data-poster="Lilo & Stitch">
+            <div class="poster" style="background-image: url('Lilo\ &\ Stitch.jpg');"></div>
+            <h3>Lilo & Stitch</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Thunderbolts" data-poster="">
+            <div class="poster" style="background-image: url('Thunder.jpg');"></div>
+            <h3>Thunderbolts*</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Mission Impossible" data-poster="Mission Impossible">
+            <div class="poster" style="background-image: url('impossible.jfif');"></div>
+            <h3>Mission Impossible</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Takas" data-poster="takas.jfif">
+            <div class="poster" style="background-image: url('takas.jpg');"></div>
+            <h3>Takas</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="ConMom" data-poster="ConMom">
+            <div class="poster" style="background-image: url('ConMom.jfif');"></div>
+            <h3>ConMom</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Tokyo Drift" data-poster="tokyo drift.jpg">
+            <div class="poster" style="background-image: url('tokyo drift.jpg');"></div>
+            <h3>Tokyo Drift</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Barbie" data-poster="barbie.jpg">
+            <div class="poster" style="background-image: url('barbie.jpg');"></div>
+            <h3>Barbie</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Iron Man" data-poster="iron man.jpg">
+            <div class="poster" style="background-image: url('iron man.jpg');"></div>
+            <h3>Iron Man</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Dune" data-poster="dune.jpg">
+            <div class="poster" style="background-image: url('dune.jpg');"></div>
+            <h3>Dune</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Oppenheimer" data-poster="oppenheimer.jpg">
+            <div class="poster" style="background-image: url('oppenheimer.jpg');"></div>
+            <h3>Oppenheimer</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="The Nun 2" data-poster="the nun 2.jpg">
+            <div class="poster" style="background-image: url('the nun 2.jpg');"></div>
+            <h3>The Nun 2</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Spiderman" data-poster="spiderman.jpg">
+            <div class="poster" style="background-image: url('spiderman.jpg');"></div>
+            <h3>Spiderman</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="John Wick 4" data-poster="john wick 4.jpg">
+            <div class="poster" style="background-image: url('john wick 4.jpg');"></div>
+            <h3>John Wick 4</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Godzilla x Kong" data-poster="godzilla x kong.jpg">
+            <div class="poster" style="background-image: url('godzilla x kong.jpg');"></div>
+            <h3>Godzilla x Kong</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+          <div class="movie-card" data-movie="Aquaman 2" data-poster="aquaman 2.jpg">
+            <div class="poster" style="background-image: url('aquaman 2.jpg');"></div>
+            <h3>Aquaman 2</h3>
+            <button class="book-btn">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+   <section class="coming-soon" id="comingsoon">
+  <h2>COMING SOON</h2>
+  <div class="coming-grid">
+    <div class="coming-card">
+      <div class="poster" style="background-image: url('aveners.jpg');"></div>
+      <h3>Avengers: Doomsday</h3>
+      <p>Soon!!!</p>
+    </div>
+    <div class="coming-card">
+      <div class="poster" style="background-image: url('shrek.jpg');"></div>
+      <h3>Shrek 5</h3>
+      <p>Soon!!!</p>
+    </div>
+    <div class="coming-card">
+      <div class="poster" style="background-image: url('toy.jpg');"></div>
+      <h3>Toy Story 5</h3>
+      <p>Soon!!!</p>
+    </div>
+  </div>
+</section>
+
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Movie Booking System</p>
+  </footer>
+   <div id="trailerModal">
+    <span id="closeModal">&times;</span>
+    <iframe id="trailerFrame" width="800" height="450" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const movieCarousel = document.getElementById('movieCarousel');
+    const carouselWrapper = document.getElementById('carouselWrapper');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const scrollAmount = 350;
+
+    prevBtn.addEventListener('click', () => {
+      carouselWrapper.scrollBy({left: -scrollAmount, behavior: 'smooth'});
+    });
+
+    nextBtn.addEventListener('click', () => {
+      carouselWrapper.scrollBy({left: scrollAmount, behavior: 'smooth'});
+    });
+
+    document.querySelectorAll('.book-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = e.target.closest('.movie-card');
+        const movieName = card.dataset.movie;
+        const moviePoster = card.dataset.poster;
+
+        card.classList.add('selected');
+        setTimeout(() => card.classList.remove('selected'), 500);
+
+        localStorage.setItem('bookingMovie', JSON.stringify({
+          name: movieName,
+          poster: moviePoster
+        }));
+
+        window.location.href = 'reciept.html';
+      });
+    });
+
+    
+    const trailerModal = document.getElementById("trailerModal");
+    const trailerFrame = document.getElementById("trailerFrame");
+    const closeBtn = document.getElementById("closeModal");
+
+    document.querySelectorAll(".movie-card").forEach(card => {
+      card.addEventListener("click", (e) => {
+        if (e.target.classList.contains('book-btn')) return;
+
+        const movieTitle = card.getAttribute("data-movie");
+
+        const trailers = {
+          "Final Destination": "https://www.youtube.com/embed/9ag5hfs9wKM",
+          "Lilo & Stitch": "https://www.youtube.com/embed/VWqJifMMgZE",
+          "Thunderbolts": "https://www.youtube.com/embed/-sAOWhvheK8",
+          "Mission Impossible": "https://www.youtube.com/embed/fsQgc9pCyDU",
+          "Takas": "https://www.youtube.com/embed/_wddVv8St6k",
+          "ConMom": "https://www.youtube.com/embed/soA2IUCiVKY",
+          "Tokyo Drift": "https://www.youtube.com/embed/QPCtqe-zjw4",
+          "Barbie": "https://www.youtube.com/embed/pBk4NYhWNMM",
+          "Iron Man": "https://www.youtube.com/embed/8ugaeA-nMTc",
+          "Dune": "https://www.youtube.com/embed/n9xhJrPXop4",
+          "Oppenheimer": "https://www.youtube.com/embed/uYPbbksJxIg",
+          "The Nun 2": "https://www.youtube.com/embed/QF-oyCwaArU",
+          "Spiderman": "https://www.youtube.com/embed/JfVOs4VSpmA",
+          "John Wick 4": "https://www.youtube.com/embed/qEVUtrk8_B4",
+          "Godzilla x Kong": "https://www.youtube.com/embed/lV1OOlGwExM",
+          "Aquaman 2": "https://www.youtube.com/embed/UGc5Tzz19UY"
+        };
+
+        if (trailers[movieTitle]) {
+          trailerFrame.src = trailers[movieTitle] + "?autoplay=1";
+          trailerModal.style.display = "flex";
+        }
+      });
+    });
+
+    closeBtn.onclick = function() {
+      trailerModal.style.display = "none";
+      trailerFrame.src = "";
+    }
+
+    window.onclick = function(event) {
+      if (event.target === trailerModal) {
+        trailerModal.style.display = "none";
+        trailerFrame.src = "";
+      }
+    }
+    
+  </script>
+</body>
+</html>

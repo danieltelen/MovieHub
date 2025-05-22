@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Movie Booking System</title>
+  <style>
+    /* Your existing styles can be copied here, or put them in a separate CSS file */
+    body {
+      background-color: black;
+      background-image: url('netflix.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* ... (other styles same as your container, header, footer, inputs/buttons) ... */
+      header {
+      padding: 0;
+      background-color: maroon;
+      color: white;
+    }
+
+    .header-top {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .nav-main {
+      background-color: #800000;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+    }
+
+    .nav-main a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .nav-main a:hover {
+      background-color: red;
+    }
+
+    .container {
+      background: linear-gradient(135deg, maroon, #990000);
+      padding: 2rem;
+      border-radius: 50px;
+      width: 420px;
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
+      text-align: center;
+      margin: auto;
+    }
+    input, button {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.5rem;
+      width: 85%;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    input {
+      background-color: #fff;
+      color: #000;
+    }
+    button {
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+    a {
+      color: #ffd;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: maroon;
+      color: rgb(0, 0, 0);
+      margin-top: 0;
+      width: 100%;
+    }
+    footer a {
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>CINEMA</h1>
+    <nav class="nav-main">
+      <a href="index.html">Home</a>
+      <a href="cinema.html">Cinema</a>
+      <a href="#comingsoon">Coming Soon</a>
+      <a href="#aboutus">About Us</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Login</h2>
+  <input type="text" id="login-username" placeholder="Username" required />
+  <input type="password" id="login-password" placeholder="Password" required />
+  <button onclick="login()">Login</button>
+  <p>No account? <a href="register.html">Register here</a></p>
+</div>
+
+<footer>
+  <p>&copy; 2025 Movie Selection. All Rights Reserved.</p>
+  <p>Contact us at: support@moviesite.com | (02) 9999-8888</p>
+  <p>Follow us on 
+    <a href="#">Facebook</a>, 
+    <a href="#">Twitter</a>, and 
+    <a href="#">Instagram</a>
+  </p>
+</footer>
+
+<script>
+  async function login() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!username || !password) {
+      alert("Please enter username and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch('login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Login successful! Token: " + result.token);
+        localStorage.setItem('token', result.token);
+         window.location.href = "index.html"; // Optional redirect
+      } else {
+        alert(result.error || "Login failed.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error connecting to server.");
+    }
+  }
+</script>
+
+</body>
+</html>

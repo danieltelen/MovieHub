@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie Booking - Confirm Booking</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background-color 0.3s ease;
+    }
+    .container {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 8px 24px rgba(255, 0, 0, 0.4);
+      animation: fadeIn 0.5s ease forwards;
+    }
+    h2 {
+      color: #ff4141;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    select, button {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      background-color: #292929;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    select:focus, button:hover:not(:disabled) {
+      background-color: #480000;
+      outline: none;
+      transform: scale(1.05);
+    }
+    button:disabled {
+      background-color: #66000088;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .seat-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+      user-select: none;
+    }
+    .seat {
+      background-color: #555;
+      padding: 15px 0;
+      text-align: center;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      color: #eee;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .seat:hover {
+      background-color: #888;
+      transform: scale(1.1);
+    }
+    .seat.selected {
+      background-color: #b32424;
+      color: black;
+    }
+    .seat.reserved {
+  background-color: #990000;
+  cursor: not-allowed;
+  color: #aaa;
+  pointer-events: none;
+}
+
+    .section {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .section.active {
+      display: block;
+    }
+    .summary {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    .summary strong {
+      color: #ff4d4d;
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .button-group button {
+      width: 48%;
+    }
+    .final-receipt {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #ff5959;
+      margin-top: 10px;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @media (max-width: 500px) {
+      .seat-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+  </style>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>MovieHub</h2>
+
+   
+<section id="step-movie" class="section active">
+  <p class="summary">Selected Movie: <strong id="selectedMovieName">Loading...</strong></p>
+  <button id="to-cinema">Next: Select Cinema</button>
+</section>
+
+
+<section id="step-cinema" class="section">
+  <label for="cinemaSelect">Select Cinema:</label>
+  <select id="cinemaSelect">
+    <option value="" disabled selected>-- Choose cinema --</option>
+    <option value="Cinema 1 - SM North">Cinema 1 - SM North</option>
+    <option value="Cinema 2 - Ayala Malls">Cinema 2 - Ayala Malls</option>
+    <option value="Cinema 3 - Robinsons Galleria">Cinema 3 - Robinsons Galleria</option>
+    <option value="Cinema 4 - SM Fairview">Cinema 4 - SM Fairview</option>
+    <option value="Cinema 5 - Greenbelt Cinema">Cinema 5 - Greenbelt Cinema</option>
+    <option value="Cinema 6 - Vista Mall Taguig">Cinema 6 - Vista Mall Taguig</option>
+  </select>
+  <div class="button-group">
+    <button id="back-to-movie">Back</button>
+    <button id="to-time" disabled>Next: Select Time</button>
+  </div>
+</section>
+
+
+<section id="step-time" class="section">
+  <label for="timeSelect">Select Time:</label>
+  <select id="timeSelect">
+    <option value="" disabled selected>-- Choose showtime --</option>
+    <option>10:00 AM</option>
+    <option>1:30 PM</option>
+    <option>5:00 PM</option>
+    <option>7:30 PM</option>
+    <option>9:30 PM</option>
+  </select>
+  <div class="button-group">
+    <button id="back-to-cinema">Back</button>
+    <button id="to-seat" disabled>Next: Select Seats</button>
+  </div>
+</section>
+
+
+<section id="step-seat" class="section">
+  <label>Select Seats:</label>
+  <div class="seat-grid" id="seatGrid" aria-label="Select your seats"></div>
+  <div class="button-group" style="margin-top: 30px;">
+    <button id="back-to-time">Back</button>
+    <button id="to-confirm" disabled>Next: Confirm Booking</button>
+  </div>
+</section>
+
+
+<section id="step-confirm" class="section">
+  <p class="summary">Movie: <strong id="confMovie"></strong></p>
+  <p class="summary">Cinema: <strong id="confCinema"></strong></p>
+  <p class="summary">Time: <strong id="confTime"></strong></p>
+  <p class="summary">Seats: <strong id="confSeats"></strong></p>
+  <p class="summary">Total Price: <strong id="confTotal"></strong></p>
+  <div class="button-group" style="margin-top: 25px;">
+    <button id="back-to-seat">Back</button>
+    <button id="confirmBooking">Confirm Booking</button>
+  </div>
+</section>
+
+
+<section id="step-receipt" class="section">
+  <h2>Booking Confirmed</h2>
+  <p class="summary">Movie: <strong id="recMovie"></strong></p>
+  <p class="summary">Cinema: <strong id="recCinema"></strong></p>
+  <p class="summary">Time: <strong id="recTime"></strong></p>
+  <p class="summary">Seats: <strong id="recSeats"></strong></p>
+  <p class="summary">Total Price: <strong id="recTotal"></strong></p>
+  <button id="backToHome">Back to Home</button>
+  <button id="downloadReceipt">Download Receipt (PDF)</button>
+
+</section>
+
+ <script>
+    const steps = {
+      movie: document.getElementById('step-movie'),
+      cinema: document.getElementById('step-cinema'),
+      time: document.getElementById('step-time'),
+      seat: document.getElementById('step-seat'),
+      confirm: document.getElementById('step-confirm'),
+      receipt: document.getElementById('step-receipt')
+    };
+
+    let bookingData = {
+      movie: '',
+      cinema: '',
+      time: '',
+      seats: []
+    };
+
+    const storedMovie = JSON.parse(localStorage.getItem('bookingMovie'));
+    if (storedMovie && storedMovie.name) {
+      bookingData.movie = storedMovie.name;
+      document.getElementById('selectedMovieName').innerText = storedMovie.name;
+    } else {
+      document.getElementById('selectedMovieName').innerText = 'No movie selected';
+    }
+
+    document.getElementById('to-cinema').addEventListener('click', () => showStep('cinema'));
+    document.getElementById('back-to-movie').addEventListener('click', () => showStep('movie'));
+
+    const cinemaSelect = document.getElementById('cinemaSelect');
+    const toTimeBtn = document.getElementById('to-time');
+    cinemaSelect.addEventListener('change', () => {
+      toTimeBtn.disabled = cinemaSelect.value === '';
+    });
+    toTimeBtn.addEventListener('click', () => {
+      bookingData.cinema = cinemaSelect.value;
+      showStep('time');
+    });
+    document.getElementById('back-to-cinema').addEventListener('click', () => showStep('cinema'));
+
+    const timeSelect = document.getElementById('timeSelect');
+    const toSeatBtn = document.getElementById('to-seat');
+    timeSelect.addEventListener('change', () => {
+      toSeatBtn.disabled = timeSelect.value === '';
+    });
+    toSeatBtn.addEventListener('click', () => {
+      bookingData.time = timeSelect.value;
+      showStep('seat');
+    });
+    document.getElementById('back-to-time').addEventListener('click', () => showStep('time'));
+
+    const seatGrid = document.getElementById('seatGrid');
+    const toConfirmBtn = document.getElementById('to-confirm');
+
+    function createSeats() {
+      seatGrid.innerHTML = '';
+      const reservedSeats = ['A1', 'A5', 'A8', 'A13', 'A21', 'A30', 'A33'];
+      for (let i = 1; i <= 50; i++) {
+        const seatNumber = 'A' + i;
+        const seat = document.createElement('div');
+        seat.className = 'seat';
+        seat.textContent = seatNumber;
+        seat.setAttribute('tabindex', 0);
+        if (reservedSeats.includes(seatNumber)) {
+          seat.classList.add('reserved');
+        } else {
+          seat.addEventListener('click', () => toggleSeat(seat));
+          seat.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleSeat(seat);
+            }
+          });
+        }
+        seatGrid.appendChild(seat);
+      }
+    }
+
+    function toggleSeat(seat) {
+      seat.classList.toggle('selected');
+      updateSeatSelection();
+    }
+
+    function updateSeatSelection() {
+      const selectedSeats = seatGrid.querySelectorAll('.seat.selected');
+      bookingData.seats = Array.from(selectedSeats).map(s => s.textContent);
+      toConfirmBtn.disabled = bookingData.seats.length === 0;
+    }
+
+    toConfirmBtn.addEventListener('click', () => {
+      showConfirmation();
+      showStep('confirm');
+    });
+
+    document.getElementById('back-to-seat').addEventListener('click', () => showStep('seat'));
+
+    function showConfirmation() {
+      document.getElementById('confMovie').innerText = bookingData.movie;
+      document.getElementById('confCinema').innerText = bookingData.cinema;
+      document.getElementById('confTime').innerText = bookingData.time;
+      document.getElementById('confSeats').innerText = bookingData.seats.join(', ');
+      document.getElementById('confTotal').innerText = '₱' + (bookingData.seats.length * 300);
+    }
+
+    document.getElementById('confirmBooking').addEventListener('click', () => {
+      localStorage.setItem('bookingDetails', JSON.stringify(bookingData));
+      showReceipt();
+      showStep('receipt');
+    });
+
+    document.getElementById('backToHome').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    function showReceipt() {
+      document.getElementById('recMovie').innerText = bookingData.movie;
+      document.getElementById('recCinema').innerText = bookingData.cinema;
+      document.getElementById('recTime').innerText = bookingData.time;
+      document.getElementById('recSeats').innerText = bookingData.seats.join(', ');
+      document.getElementById('recTotal').innerText = '₱' + (bookingData.seats.length * 300);
+    }
+
+    function showStep(stepName) {
+      Object.values(steps).forEach(sec => sec.classList.remove('active'));
+      steps[stepName].classList.add('active');
+      if (stepName === 'seat') {
+        toConfirmBtn.disabled = bookingData.seats.length === 0;
+      }
+    }
+
+    
+    document.getElementById('downloadReceipt').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text("🎬 CINEMA RECEIPT", 20, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Movie: ${bookingData.movie}`, 20, 40);
+      doc.text(`Cinema: ${bookingData.cinema}`, 20, 50);
+      doc.text(`Time: ${bookingData.time}`, 20, 60);
+      doc.text(`Seats: ${bookingData.seats.join(', ')}`, 20, 70);
+      doc.text(`Total Price: ₱${bookingData.seats.length * 300}`, 20, 80);
+
+      doc.text("Thank you for booking with us!", 20, 100);
+      doc.save("booking_receipt.pdf");
+    });
+
+    createSeats();
+  </script>
+</body>
+</html>
+
+
